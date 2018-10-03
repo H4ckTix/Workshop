@@ -1,0 +1,6 @@
+html{
+    position: absolute;
+    top: 20%; left: 32%;
+    font-family: 'Open Sans', sans-serif;  
+    background-image: url("img/header.jpg");
+}
