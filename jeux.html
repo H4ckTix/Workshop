@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <html>
     <link href="https://fonts.googleapis.com/css?family=Graduate" rel="stylesheet">
 	<head>
@@ -51,6 +52,57 @@ function start(){
 
 	out.innerHTML = "Player 1 Score: " + player1.score + "<br>Player 2 Score: " + player2.score;
 	requestAnimationFrame(start);
+=======
+<HTML>
+    <link href="jeux.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="css/jeu.css" rel="stylesheet">
+
+<HEAD>
+    <meta charset="utf-8">
+<TITLE>EasterEggs</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+
+
+var timerID = null
+var INT = 10
+var loadFLG=0
+var gameFLG=0
+var missFLG=0
+var tim = 0                                    //time
+var blcol = new Array(5)                       //block color
+var blsta = new Array(40)                      //block status
+var blclr = 0                                  //clear block
+var ballX = 0                                  //ball data
+var ballY = 0
+var ballN = 3
+var ballDX= 0
+var ballDY= 0
+var tmpRL = 193
+var keyP=0
+var keyPr=0
+var endFLG=0
+
+blcol[0]="#FFFF00"
+blcol[1]="#FFB000"
+blcol[2]="#FF8000"
+blcol[3]="#FF4000"
+blcol[4]="#FF0000"
+blcol[5]="#000000"
+
+var ieFLG=0
+var n4FLG=0
+if (document.all){
+ ieFLG=1
+}else{
+ if (document.getElementById){
+  n4FLG=0
+ }else{
+  n4FLG=1
+ }
+>>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 }
 
 function Ball(x,y){
@@ -74,6 +126,7 @@ function Player(x,y){
 	this.maxSpeed = 3;
 }
 
+<<<<<<< HEAD
 function reset(){
 	var score1 = player1.score;
 	var score2 = player2.score;
@@ -90,6 +143,24 @@ function reset(){
 	downDown = false;
 	leftDown = false;
 	rightDown = false;
+=======
+
+function keyDown(DnEvents){
+ if (ieFLG==0){
+  k=DnEvents.which
+ }else{
+  k=window.event.keyCode
+ }
+
+  if (k == 54){keyP=5}                         //6
+  if (k == 102){keyP=5}                        //6
+
+  if (k == 52){keyP=-5}                        //4
+  if (k == 100){keyP=-5}                       //4
+
+  if (k == 32){if (gameFLG==0){initG()}}       //S
+  if (k == 115){if (gameFLG==0){initG()}}      //s
+>>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 }
 
 function movePlayers(){
@@ -311,6 +382,18 @@ function checkKeyboardStatus(){
 		}
 	}
 }
+<<<<<<< HEAD
+=======
+//-->
+</SCRIPT>
+<FORM NAME="SC">
+BALL :<INPUT TYPE="text" NAME="BL" SIZE=5 VALUE = "3" ><BR>
+TIME :<INPUT TYPE="text" NAME="TM" SIZE=5 VALUE = "0" ><BR>
+BLOCK:<INPUT TYPE="text" NAME="CL" SIZE=5 VALUE = "0" ><BR>
+SCORE:<INPUT TYPE="text" NAME="SR" SIZE=5 VALUE = "0" ><BR>
+<P><BR>
+</FORM>
+>>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 
 document.onkeyup = function(e){
 	if(e.keyCode === 87){
@@ -376,6 +459,7 @@ function renderBall(){
 	c.restore();
 }
 
+<<<<<<< HEAD
 function renderPlayers(){
 	c.save();
 	c.fillStyle = "red";
@@ -408,8 +492,25 @@ function renderGates(){
 	c.stroke();
 	c.closePath();
 	c.restore();
+=======
+<!-- Left  = 4 key<BR>
+Right = 6 key<BR>
+START = S key -->
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+if (n4FLG==1){
+ document.write('</FONT></LAYER><LAYER TOP=320 LEFT=20><A class="btn btn-primary" HREF="index.html">Retour</A></div><p STYLE="position:absolute; top:320px; left:120px">Espace pour demarre, 4 et 6 pour bouger la barre/p></LAYER>')
+}else{
+ if (document.getElementById){
+ document.write('</DIV><A HREF="index.html" class="btn btn-primary" STYLE="position:absolute; top:320px; left:20px">Retour</A></div><p STYLE="position:absolute; top:320px; left:120px; width:250px;" class="color-bgdarklight" >Espace pour démarrer, 4 et 6 pour bouger la barre</p>')
+ }else{
+ document.write('</DIV><DIV  STYLE="position:absolute; top:320px; left:20px"><A class="btn btn-primary" HREF="index.html">Retour</A></div><p STYLE="position:absolute; top:320px; left:120px">Espace pour demarre, 4 et 6 pour bouger la barre</p></DIV>')
+ }
+>>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 }
 
+<<<<<<< HEAD
 function renderBackground(){
 	c.save();
 	c.fillStyle = "#66aa66";
@@ -428,5 +529,9 @@ function clear(){
 }
     
     </script>
+=======
+</BODY>
+</HTML>
+>>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 
 </html>
