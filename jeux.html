@@ -1,58 +1,3 @@
-<<<<<<< HEAD
-<html>
-    <link href="https://fonts.googleapis.com/css?family=Graduate" rel="stylesheet">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" type="text/css" href="jeux.css"></link>	
-	</head>
-    <body>
-		<canvas id="canvas" width="700" height="500">Install gentoo</canvas>
-    <div id="out"></div>    
-    <script type="text/javascript" src="script.js"></script>
-    </body>
-
-    <script>
-var canvas = document.getElementById("canvas");
-var c = canvas.getContext("2d");
-var out = document.getElementById("out");
-window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-
-var init = requestAnimationFrame(start);
-var player1 = new Player(100,250);
-var player2 = new Player(600,250);
-var ball = new Ball(350,250);
-var wDown = false;
-var sDown = false;
-var aDown = false;
-var dDown = false;
-var upDown = false;
-var downDown = false;
-var leftDown = false;
-var rightDown = false;
-
-myAudio = new Audio('music/UEFA.mp3'); 
-myAudio.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
-}, false);
-myAudio.play();
-
-function start(){
-	clear();
-	renderBackground();
-	renderGates();
-	checkKeyboardStatus();
-	checkPlayersBounds();
-	checkBallBounds();
-	checkPlayers_BallCollision();
-	movePlayers();
-	moveBall();
-	renderPlayers();
-	renderBall();
-
-	out.innerHTML = "Player 1 Score: " + player1.score + "<br>Player 2 Score: " + player2.score;
-	requestAnimationFrame(start);
-=======
 <HTML>
     <link href="jeux.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
@@ -102,7 +47,6 @@ if (document.all){
  }else{
   n4FLG=1
  }
->>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 }
 
 function Ball(x,y){
@@ -126,24 +70,6 @@ function Player(x,y){
 	this.maxSpeed = 3;
 }
 
-<<<<<<< HEAD
-function reset(){
-	var score1 = player1.score;
-	var score2 = player2.score;
-	player1 = new Player(100,250);
-	player1.score = score1;
-	player2 = new Player(600,250);
-	player2.score = score2;
-	ball = new Ball(350,250);
-	wDown = false;
-	sDown = false;
-	aDown = false;
-	dDown = false;
-	upDown = false;
-	downDown = false;
-	leftDown = false;
-	rightDown = false;
-=======
 
 function keyDown(DnEvents){
  if (ieFLG==0){
@@ -160,7 +86,6 @@ function keyDown(DnEvents){
 
   if (k == 32){if (gameFLG==0){initG()}}       //S
   if (k == 115){if (gameFLG==0){initG()}}      //s
->>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 }
 
 function movePlayers(){
@@ -382,8 +307,6 @@ function checkKeyboardStatus(){
 		}
 	}
 }
-<<<<<<< HEAD
-=======
 //-->
 </SCRIPT>
 <FORM NAME="SC">
@@ -393,7 +316,6 @@ BLOCK:<INPUT TYPE="text" NAME="CL" SIZE=5 VALUE = "0" ><BR>
 SCORE:<INPUT TYPE="text" NAME="SR" SIZE=5 VALUE = "0" ><BR>
 <P><BR>
 </FORM>
->>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 
 document.onkeyup = function(e){
 	if(e.keyCode === 87){
@@ -459,40 +381,6 @@ function renderBall(){
 	c.restore();
 }
 
-<<<<<<< HEAD
-function renderPlayers(){
-	c.save();
-	c.fillStyle = "red";
-	c.beginPath();
-	c.arc(player1.x,player1.y,player1.size,0,Math.PI*2);
-	c.fill();
-	c.closePath();
-	c.beginPath();
-	c.fillStyle = "blue";
-	c.arc(player2.x,player2.y,player2.size,0,Math.PI*2);
-	c.fill();
-	c.closePath();
-	c.restore();
-}
-
-function renderGates(){
-	c.save();
-	c.beginPath();
-	c.moveTo(0,150);
-	c.lineTo(0,350);
-	c.strokeStyle = "red";
-	c.lineWidth = 10;
-	c.stroke();
-	c.closePath();
-	c.beginPath();
-	c.moveTo(canvas.width,150);
-	c.lineTo(canvas.width,350);
-	c.strokeStyle = "blue";
-	c.lineWidth = 10;
-	c.stroke();
-	c.closePath();
-	c.restore();
-=======
 <!-- Left  = 4 key<BR>
 Right = 6 key<BR>
 START = S key -->
@@ -507,31 +395,9 @@ if (n4FLG==1){
  }else{
  document.write('</DIV><DIV  STYLE="position:absolute; top:320px; left:20px"><A class="btn btn-primary" HREF="index.html">Retour</A></div><p STYLE="position:absolute; top:320px; left:120px">Espace pour demarre, 4 et 6 pour bouger la barre</p></DIV>')
  }
->>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 }
 
-<<<<<<< HEAD
-function renderBackground(){
-	c.save();
-	c.fillStyle = "#66aa66";
-	c.fillRect(0,0,canvas.width,canvas.height);
-	c.strokeStyle = "rgba(255,255,255,0.6)";
-	c.beginPath();
-	c.arc(canvas.width/2,canvas.height/2,150,0,Math.PI*2);
-	c.closePath();
-	c.lineWidth = 10;
-	c.stroke();
-	c.restore();
-}
-
-function clear(){
-	c.clearRect(0,0,canvas.width,canvas.height);
-}
-    
-    </script>
-=======
 </BODY>
 </HTML>
->>>>>>> 878dea89cc3c71a067323c9a2311d9b079d1fee7
 
 </html>
