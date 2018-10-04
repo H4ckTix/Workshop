@@ -1,6 +1,8 @@
 html{
-    position: absolute;
-    top: 20%; left: 32%;
-    font-family: 'Open Sans', sans-serif;  
-    background-image: url("img/header.jpg");
+    font-family: 'Graduate', cursive;
+    background-image: url('img/header.jpg')
+}
+
+body{
+    text-align: center;
 }
