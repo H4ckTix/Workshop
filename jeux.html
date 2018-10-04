@@ -1,17 +1,15 @@
 <HTML>
-<<<<<<< HEAD
     <link href="jeux.css" rel="stylesheet">
-    <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="css/jeu.css" rel="stylesheet">
 
 <HEAD>
+    <meta charset="utf-8">
 <TITLE>EasterEggs</TITLE>
-=======
-<HEAD>
-<TITLE>Hard Block</TITLE>
->>>>>>> 399f19de4850b0797b117258ffe4109a0c8de2bd
 <SCRIPT LANGUAGE="JavaScript">
-<!--
+
 
 var timerID = null
 var INT = 10
@@ -165,7 +163,7 @@ function keyDown(DnEvents){
   if (k == 52){keyP=-5}                        //4
   if (k == 100){keyP=-5}                       //4
 
-  if (k == 83){if (gameFLG==0){initG()}}       //S
+  if (k == 32){if (gameFLG==0){initG()}}       //S
   if (k == 115){if (gameFLG==0){initG()}}      //s
 }
 
@@ -422,12 +420,6 @@ if (n4FLG==1){
 }
 //-->
 </SCRIPT>
-
-<FONT STYLE="font-size:22px; color:#000044"><I><B>Hard Block </B></I></FONT>
-<FONT STYLE="font-size:28px; color:#CC0000"><I><B>R</B></I></FONT>
-<BR>
-  <FONT STYLE="font-size:14px; color:#003F00">....for IE4,IE5,NN4,Gecko....</FONT>
-<BR><P>
 <FORM NAME="SC">
 BALL :<INPUT TYPE="text" NAME="BL" SIZE=5 VALUE = "3" ><BR>
 TIME :<INPUT TYPE="text" NAME="TM" SIZE=5 VALUE = "0" ><BR>
@@ -470,28 +462,24 @@ if (n4FLG==1){
 //-->
 </SCRIPT>
 
-Left  = 4 key<BR>
+<!-- Left  = 4 key<BR>
 Right = 6 key<BR>
-START = S key
+START = S key -->
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 if (n4FLG==1){
- document.write('</FONT></LAYER><LAYER TOP=320 LEFT=20><A HREF="http://plaza.harmonix.ne.jp/~jimmeans/">Home</A></LAYER>')
+ document.write('</FONT></LAYER><LAYER TOP=320 LEFT=20><A class="btn btn-primary" HREF="index.html">Retour</A></div><p STYLE="position:absolute; top:320px; left:120px">Espace pour demarre, 4 et 6 pour bouger la barre/p></LAYER>')
 }else{
  if (document.getElementById){
- document.write('</DIV><A HREF="http://plaza.harmonix.ne.jp/~jimmeans/" STYLE="position:absolute; top:320px; left:20px">Home</A>')
+ document.write('</DIV><A HREF="index.html" class="btn btn-primary" STYLE="position:absolute; top:320px; left:20px">Retour</A></div><p STYLE="position:absolute; top:320px; left:120px; width:250px;" class="color-bgdarklight" >Espace pour démarrer, 4 et 6 pour bouger la barre</p>')
  }else{
- document.write('</DIV><DIV  STYLE="position:absolute; top:320px; left:20px"><A HREF="http://plaza.harmonix.ne.jp/~jimmeans/">Home</A></DIV>')
+ document.write('</DIV><DIV  STYLE="position:absolute; top:320px; left:20px"><A class="btn btn-primary" HREF="index.html">Retour</A></div><p STYLE="position:absolute; top:320px; left:120px">Espace pour demarre, 4 et 6 pour bouger la barre</p></DIV>')
  }
 }
 //-->
 </SCRIPT>
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 399f19de4850b0797b117258ffe4109a0c8de2bd
 </BODY>
 </HTML>
 
