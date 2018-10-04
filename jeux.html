@@ -1,485 +1,432 @@
-<HTML>
-<HEAD>
-<TITLE>Hard Block</TITLE>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
+<html>
+    <link href="https://fonts.googleapis.com/css?family=Graduate" rel="stylesheet">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="jeux.css"></link>	
+	</head>
+    <body>
+		<canvas id="canvas" width="700" height="500">Install gentoo</canvas>
+    <div id="out"></div>    
+    <script type="text/javascript" src="script.js"></script>
+    </body>
 
-var timerID = null
-var INT = 10
-var loadFLG=0
-var gameFLG=0
-var missFLG=0
-var tim = 0                                    //time
-var blcol = new Array(5)                       //block color
-var blsta = new Array(40)                      //block status
-var blclr = 0                                  //clear block
-var ballX = 0                                  //ball data
-var ballY = 0
-var ballN = 3
-var ballDX= 0
-var ballDY= 0
-var tmpRL = 193
-var keyP=0
-var keyPr=0
-var endFLG=0
+    <script>
+var canvas = document.getElementById("canvas");
+var c = canvas.getContext("2d");
+var out = document.getElementById("out");
+window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
-blcol[0]="#FFFF00"
-blcol[1]="#FFB000"
-blcol[2]="#FF8000"
-blcol[3]="#FF4000"
-blcol[4]="#FF0000"
-blcol[5]="#000000"
+var init = requestAnimationFrame(start);
+var player1 = new Player(100,250);
+var player2 = new Player(600,250);
+var ball = new Ball(350,250);
+var wDown = false;
+var sDown = false;
+var aDown = false;
+var dDown = false;
+var upDown = false;
+var downDown = false;
+var leftDown = false;
+var rightDown = false;
 
-var ieFLG=0
-var n4FLG=0
-if (document.all){
- ieFLG=1
-}else{
- if (document.getElementById){
-  n4FLG=0
- }else{
-  n4FLG=1
- }
+myAudio = new Audio('music/UEFA.mp3'); 
+myAudio.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+}, false);
+myAudio.play();
+
+function start(){
+	clear();
+	renderBackground();
+	renderGates();
+	checkKeyboardStatus();
+	checkPlayersBounds();
+	checkBallBounds();
+	checkPlayers_BallCollision();
+	movePlayers();
+	moveBall();
+	renderPlayers();
+	renderBall();
+
+	out.innerHTML = "Player 1 Score: " + player1.score + "<br>Player 2 Score: " + player2.score;
+	requestAnimationFrame(start);
 }
 
-
-//-----------------------------------------
-//------------- main function -------------
-//-----------------------------------------
-
-function mainF(){
- clearTimeout(timerID)
- tim=tim+1
- with (Math){tmptim=floor(tim/10)}
- tmptc=""
- tmptb=tim/10
- if (tim==tmptim*10){tmptc=".0"}
- ballX=ballX+ballDX
- ballY=ballY+ballDY
- outCHK()
- blkCHK()
- if (document.getElementById){
-  document.SC.TM.value=tmptb+tmptc
-  document.SC.CL.value=blclr
-  document.SC.SR.value=blclr*200-tim
-  document.getElementById("ball").style.top =  ballY
-  document.getElementById("ball").style.left = ballX
- }else{
-  if (ieFLG==1){
-   document.SC.TM.value=tmptb+tmptc
-   document.SC.CL.value=blclr
-   document.SC.SR.value=blclr*200-tim
-   ball.style.posTop = ballY
-   ball.style.posLeft = ballX
-  }else{
-   document.layers["info"].document.forms[0].TM.value=tmptb+tmptc
-   document.layers["info"].document.forms[0].CL.value=blclr
-   document.layers["info"].document.forms[0].SR.value=blclr*200-tim
-   document.layers["ball"].moveTo(ballX,ballY)
-  }
- }
- racketMove()
- if (gameFLG==1){timerID = setTimeout("mainF()",INT)}
+function Ball(x,y){
+	this.x = x;
+	this.y = y;
+	this.xVel = 0;
+	this.yVel = 0;
+	this.decel = 0.06;
+	this.size = 10;
 }
 
-
-//-----------------------------------------
-//------------- sub functions -------------
-//-----------------------------------------
-
-//game init
-function initG(){
-  keyP=0
- if (endFLG == 0){
-  endFLG=1
-  blclr=0
-  tim=0
-  ballN=3
-  with (Math){tmptim=floor(tim/10)}
-  if (document.getElementById){
-   document.SC.TM.value=tmptim
-   document.getElementById("ovrmes").style.top=-1000
-   document.getElementById("clrmes").style.top=-1000
-  }else{
-   if (ieFLG==1){
-    document.SC.TM.value=tmptim
-    clrmes.style.top=-1000
-    ovrmes.style.top=-1000
-   }else{
-    document.layers["info"].document.forms[0].TM.value=tmptim
-    document.layers["ovrmes"].visibility="HIDE"
-    document.layers["clrmes"].visibility="HIDE"
-   }
-  }
-  for (ib=0; ib<5; ib++){for (ia=0; ia<8; ia++){
-   tmpIDn=ib*8+ia+1
-   if (document.getElementById){
-    document.getElementById(tmpIDn).style.backgroundColor = blcol[ib]
-   }else{
-    if (ieFLG==1){
-     document.all(tmpIDn+9).style.backgroundColor = blcol[ib]
-    }else{
-     document.layers[tmpIDn].bgColor=blcol[ib]
-    }
-   }
-   blsta[ib*8+ia]=ib
-  }}
- }
- if (document.getElementById){
-  document.SC.BL.value=ballN
-  document.getElementById("starter").style.top=-1000
- }else{
-  if (ieFLG==1){
-   document.SC.BL.value=ballN
-   starter.style.top=-1000
-  }else{
-   document.layers["info"].document.forms[0].BL.value=ballN
-   document.layers["starter"].visibility="HIDE"
-  }
- }
- gameFLG=1;loadFLG=1
- ballX=209;ballY=270;ballDX=-8;ballDY=-8;tmpRL=193;missFLG=0
- timerID = setTimeout("mainF()",INT)
+function Player(x,y){
+	this.x = x;
+	this.y = y;
+	this.size = 20;
+	this.xVel = 0;
+	this.yVel = 0;
+	this.score = 0;
+	this.accel = 0.55;
+	this.decel = 0.55;
+	this.maxSpeed = 3;
 }
 
-
-function keyDown(DnEvents){
- if (ieFLG==0){
-  k=DnEvents.which
- }else{
-  k=window.event.keyCode
- }
-
-  if (k == 54){keyP=5}                         //6
-  if (k == 102){keyP=5}                        //6
-
-  if (k == 52){keyP=-5}                        //4
-  if (k == 100){keyP=-5}                       //4
-
-  if (k == 83){if (gameFLG==0){initG()}}       //S
-  if (k == 115){if (gameFLG==0){initG()}}      //s
+function reset(){
+	var score1 = player1.score;
+	var score2 = player2.score;
+	player1 = new Player(100,250);
+	player1.score = score1;
+	player2 = new Player(600,250);
+	player2.score = score2;
+	ball = new Ball(350,250);
+	wDown = false;
+	sDown = false;
+	aDown = false;
+	dDown = false;
+	upDown = false;
+	downDown = false;
+	leftDown = false;
+	rightDown = false;
 }
 
-function keyUp(UpEvents){
- if (ieFLG==0){
-  k=UpEvents.which
- }else{
-  k=window.event.keyCode
- }
-  if (k == 102){keyP=0}                   //6
-  if (k == 54 ){keyP=0}                   //4
-  if (k == 100){keyP=0}                   //6
-  if (k == 52 ){keyP=0}                   //4
+function movePlayers(){
+	player1.x += player1.xVel;
+	player1.y += player1.yVel;
+	player2.x += player2.xVel;
+	player2.y += player2.yVel;
 }
 
-
-//racket move
-function racketMove(){
- if (loadFLG==1){
-  if (keyP != 0){
-   tmpkeyP=keyP*keyPr
-   if (tmpkeyP>=0){
-    if (keyPr != 0){
-     if (Math.abs(keyPr)<15){keyPr=keyPr*1.2}
-    }else{
-     keyPr=keyP
-    }
-   }else{
-   keyPr=keyP
-   }
-  }else{
-   keyPr=0
-  }
-  tmpRL=tmpRL+keyPr
-  if (tmpRL<16){tmpRL=16}
-  if (tmpRL>370){tmpRL=370}
-  if (document.getElementById){
-   document.getElementById("racket").style.left=tmpRL
-  }else{
-   if (ieFLG==1){
-    racket.style.left=tmpRL
-   }else{
-    document.layers["racket"].left=tmpRL
-   }
-  }
- }
+function checkPlayers_BallCollision(){
+	var p1_ball_distance = getDistance(player1.x,player1.y,ball.x,ball.y) - player1.size - ball.size;
+	if(p1_ball_distance < 0){
+		collide(ball,player1);
+	}
+	var p2_ball_distance = getDistance(player2.x,player2.y,ball.x,ball.y) - player2.size - ball.size;
+	if(p2_ball_distance < 0){
+		collide(ball,player2);
+	}
 }
 
-//wall and racket check
-function outCHK(){
- if (ballX < 16){ballX=32-ballX;ballDX=-ballDX}
- if (ballX > 401){ballX=802-ballX;ballDX=-ballDX}
- if (ballY < 16){ballY=32-ballY;ballDY=-ballDY}
- if (ballY >= 272){
-  if (missFLG==0){
-   tmpX=(ballDX/ballDY)*(272-ballY)+ballX
-   if (tmpX >= tmpRL-12){
-    if (tmpX <= tmpRL+42){
-     ballY=272;ballDY=-ballDY
-     ballX=tmpX
-     ballRD=tmpX-tmpRL
-     with (Math){ballDX=8*abs(ballDX)/ballDX}
-     if (ballRD<-4){ballDX=-15}
-     if (ballRD>36){ballDX=15}
-     if (ballRD>=14){if (ballRD<=16){ballDX=-2}}
-     if (ballRD>=17){if (ballRD<=20){ballDX=2}}
-     if (ballRD>=0){if (ballRD<=4){ballDX=-4}}
-     if (ballRD>=28){if (ballRD<=32){ballDX=4}}
-     if (ballRD>=-4){if (ballRD<=-1){ballDX=-11}}
-     if (ballRD>=33){if (ballRD<=36){ballDX=11}}
-    }
-   }
-  if (ballDY>0){missFLG=1}
-  }else{
-  if (ballY>290){missFLG=0;ballN=ballN-1;gameEnd()}
-  }
- }
+function collide(cir1,cir2){
+	var dx = (cir1.x - cir2.x) / (cir1.size);
+	var dy = (cir1.y - cir2.y) / (cir1.size);
+	cir2.xVel = -dx;
+	cir2.yVel = -dy;
+	cir1.xVel = dx;
+	cir1.yVel = dy;
 }
 
-//block check
-function blkCHK(){
- tmpY=ballY+4;tmpX=ballX+4
- if (tmpY>=48){if (tmpY<=147){if (tmpX>=29){if (tmpX<=396){
-  with (Math) {
-   ia=floor((tmpX-29)/46);ib=floor((tmpY-48)/20);ic=ib*8+ia
-  }
-  if (blsta[ic]<=4){
-   tmpbc=blsta[ic]+1
-   blsta[ic]=tmpbc
-   tmpIDnc=ic+1
-   if (document.getElementById){
-    document.getElementById(tmpIDnc).style.backgroundColor = blcol[tmpbc]
-   }else{
-    if (ieFLG==1){
-     document.all(tmpIDnc+9).style.backgroundColor = blcol[tmpbc]
-    }else{
-     document.layers[tmpIDnc].bgColor=blcol[tmpbc]
-    }
-   }
-   if (tmpbc==5){blclr=blclr+1}
-   if (blclr >= 40){gameEnd()}
-
-   if (ballDX>0){
-    iy=(ballDY/ballDX)*(29+46*ia-tmpX)+tmpY
-    if (iy>48+20*ib+18){
-     tmpY1=48+20*ib+18
-     tmpX1=(ballDX/ballDY)*(48+20*ib+18-tmpY)+tmpX  
-     ballX=tmpX1-4;ballY=tmpY1-4
-     ballDY=-ballDY
-    }else{
-     if (iy<44+20*ib){
-      tmpY1=48+20*ib
-      tmpX1=(ballDX/ballDY)*(48+20*ib-tmpY)+tmpX  
-      ballX=tmpX1-4;ballY=tmpY1-4
-      ballDY=-ballDY
-     }else{
-      tmpX1=29+46*ia
-      tmpY1=(ballDY/ballDX)*(29+46*ia-tmpX)+tmpY
-      ballX=tmpX1-4;ballY=tmpY1-4
-      ballDX=-ballDX
-     }
-    }
-   }else{
-    iy=(ballDY/ballDX)*(29+46*ia+44-tmpX)+tmpY
-    if (iy>48+20*ib+18){
-     tmpY1=48+20*ib+18
-     tmpX1=(ballDX/ballDY)*(48+20*ib+18-tmpY)+tmpX  
-     ballX=tmpX1-4;ballY=tmpY1-4
-     ballDY=-ballDY
-    }else{
-     if (iy<44+20*ib){
-      tmpY1=48+20*ib
-      tmpX1=(ballDX/ballDY)*(48+20*ib-tmpY)+tmpX  
-      ballX=tmpX1-4;ballY=tmpY1-4
-      ballDY=-ballDY
-     }else{
-      tmpX1=29+46*ia+44
-      tmpY1=(ballDY/ballDX)*(29+46*ia+44-tmpX)+tmpY
-      ballX=tmpX1-4;ballY=tmpY1-4
-      ballDX=-ballDX
-     }
-    }
-   }
-
-  }
- }}}}
+function getDistance(x1,y1,x2,y2){
+	return Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2,2));
 }
 
-//game end
-function gameEnd(){
- gameFLG=0
- loadFLG=0
- if (document.getElementById){
-  document.SC.BL.value=ballN
-  document.getElementById("starter").style.top=200
-  if (blclr >= 40){
-   document.getElementById("clrmes").style.top=150
-   endFLG=0
-  }
-  if (ballN <= 0){
-   document.getElementById("ovrmes").style.top=160
-   endFLG=0
-  }
- }else{
-  if (ieFLG==1){
-   document.SC.BL.value=ballN
-   starter.style.top=200
-   if (blclr >= 40){
-    clrmes.style.top=150
-    endFLG=0
-   }
-   if (ballN <= 0){
-    ovrmes.style.top=160
-    endFLG=0
-   }
-  }else{
-   document.layers["info"].document.forms[0].BL.value=ballN
-   document.layers["starter"].visibility="SHOW"
-   if (blclr >= 40){
-    document.layers["clrmes"].visibility="SHOW"
-    endFLG=0
-   }
-   if (ballN <= 0){
-    document.layers["ovrmes"].visibility="SHOW"
-    endFLG=0
-   }
-  }
- }
+function moveBall(){
+	if(ball.xVel !== 0){
+		if(ball.xVel > 0){
+			ball.xVel -= ball.decel;
+			if(ball.xVel < 0) ball.xVel = 0;
+		} else {
+			ball.xVel += ball.decel;
+			if(ball.xVel > 0) ball.xVel = 0;
+		}
+	}
+	if(ball.yVel !== 0){
+		if(ball.yVel > 0){
+			ball.yVel -= ball.decel;
+			if(ball.yVel < 0) ball.yVel = 0;
+		} else {
+			ball.yVel += ball.decel;
+			if(ball.yVel > 0) ball.yVel = 0;
+		}
+	}
+	ball.x += ball.xVel;
+	ball.y += ball.yVel;
 }
 
-//Event init
-function onLD(){
- document.onkeydown = keyDown
- document.onkeyup = keyUp
-
- if (document.getElementById){
-  document.getElementById("starter").style.top=200
-  document.getElementById("info").style.top=16
- }else{
-  if (ieFLG==1){
-   starter.style.top=200
-   info.style.top=16
-  }else{
-   document.layers["starter"].visibility="SHOW"
-  }
- }
- if (n4FLG!=0){document.captureEvents(Event.KEYDOWN|Event.KEYUP)}
+function checkBallBounds(){
+	if(ball.x + ball.size > canvas.width){
+		if(ball.y > 150 && ball.y < 350){
+			player1.score++;
+			reset();
+			return;
+		}
+		ball.x = canvas.width - ball.size;
+		ball.xVel *= -1.5;
+	}
+	if(ball.x - ball.size < 0){
+		if(ball.y > 150 && ball.y < 350){
+			player2.score++;
+			reset();
+			return;
+		}
+		ball.x = 0 + ball.size;
+		ball.xVel *= -5;
+	}
+	if(ball.y + ball.size > canvas.height){
+		ball.y = canvas.height - ball.size;
+		ball.yVel *= -1.5;
+	}
+	if(ball.y - ball.size < 0){
+		ball.y = 0 + ball.size;
+		ball.yVel *= -1.5;
+	}
 }
 
-//-->
-</SCRIPT>
-</HEAD>
-
-
-<BODY BGCOLOR="#DEB887" ONLOAD="onLD()"">
-<A NAME="t0">
-<DIV ID="gamewindow" STYLE="position:absolute; background-color:#000000; top:16px; left:16px; width:394px; height:300px"><LAYER CLIP="0,0,393,299" BGCOLOR="#000000"></LAYER></DIV>
-
-
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-//block layer write
-
-for (ib=0; ib<5; ib++){
- for (ia=0; ia<8; ia++){
-  tmpL=31+46*ia;tmpT=50+20*ib
-  tmpIDn=ib*8+ia+1
-  if (n4FLG!=1){
-   document.write("<DIV ID='"+tmpIDn+"' STYLE='position:absolute; background-color:"+blcol[ib]+"; top:"+tmpT+"px; left:"+tmpL+"px; width:42; height:16; clip:rect(0,43,17,0)'></DIV>")
-  }else{
-   document.write("<LAYER LEFT="+tmpL+" TOP="+tmpT+" CLIP='1,1,43,17' BGCOLOR='"+blcol[ib]+"'></LAYER>")
-  }
-  blsta[ib*8+ia]=ib
- }
+function checkPlayersBounds(){
+	if(player1.x + player1.size > canvas.width){
+		player1.x = canvas.width - player1.size;
+		player1.xVel *= -0.5;
+	}
+	if(player1.x - player1.size < 0){
+		player1.x = 0 + player1.size;
+		player1.xVel *= -0.5;
+	}
+	if(player1.y + player1.size > canvas.height){
+		player1.y = canvas.height - player1.size;
+		player1.yVel *= -0.5;
+	}
+	if(player1.y - player1.size < 0){
+		player1.y = 0 + player1.size;
+		player1.yVel *= -0.5;
+	}
+	if(player2.x + player2.size > canvas.width){
+		player2.x = canvas.width - player2.size;
+		player2.xVel *= -0.5;
+	}
+	if(player2.x - player2.size < 0){
+		player2.x = 0 + player2.size;
+		player2.xVel *= -0.5;
+	}
+	if(player2.y + player2.size > canvas.height){
+		player2.y = canvas.height - player2.size;
+		player2.yVel *= -0.5;
+	}
+	if(player2.y - player2.size < 0){
+		player2.y = 0 + player2.size;
+		player2.yVel *= -0.5;
+	}
 }
-//-->
-</SCRIPT>
 
+function checkKeyboardStatus(){
+	if(wDown){
+		if(player1.yVel > -player1.maxSpeed){
+			player1.yVel -= player1.accel;	
+		} else {
+			player1.yVel = -player1.maxSpeed;
+		}
+	} else {
+		if(player1.yVel < 0){
+			player1.yVel += player1.decel;
+			if(player1.yVel > 0) player1.yVel = 0;	
+		}
+	}
+	if(sDown){
+		if(player1.yVel < player1.maxSpeed){
+			player1.yVel += player1.accel;	
+		} else {
+			player1.yVel = player1.maxSpeed;
+		}
+	} else {
+		if(player1.yVel > 0){
+			player1.yVel -= player1.decel;
+			if(player1.yVel < 0) player1.yVel = 0;
+		}
+	}
+	if(aDown){
+		if(player1.xVel > -player1.maxSpeed){
+			player1.xVel -= player1.accel;	
+		} else {
+			player1.xVel = -player1.maxSpeed;
+		}
+	} else {
+		if(player1.xVel < 0){
+			player1.xVel += player1.decel;
+			if(player1.xVel > 0) player1.xVel = 0;	
+		}
+	}
+	if(dDown){
+		if(player1.xVel < player1.maxSpeed){
+			player1.xVel += player1.accel;	
+		} else {
+			player1.xVel = player1.maxSpeed;
+		}
+	} else {
+		if(player1.xVel > 0){
+			player1.xVel -= player1.decel;
+			if(player1.xVel < 0) player1.xVel = 0;
+		}
+	}
 
-<DIV ID="ball" STYLE="position:absolute; top:270px; left:209px; width:8px; height:8px">
- <DIV STYLE="position:absolute; top:0px; left:2px; background-color:#B0B0B0; width:4; height:8; clip:rect(0,3,7,0)"></DIV>
- <DIV STYLE="position:absolute; top:2px; left:0px; background-color:#B0B0B0; width:8; height:4; clip:rect(0,7,3,0)"></DIV>
- <DIV STYLE="position:absolute; top:1px; left:1px; background-color:#FFFFFF; width:6; height:6; clip:rect(0,5,5,0)"></DIV>
-</DIV>
+	//PLAYER 2
 
-<DIV ID="racket" STYLE="position:absolute; top:280px; left:193px; background-color:#B0B0FF; width:40px; height:4px; clip:rect(0,39,3,0)"></DIV>
-
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-if (n4FLG==1){
- document.write('<LAYER NAME="ball" LEFT="209" TOP="270" CLIP="0,0,7,7"> <LAYER LEFT="2" TOP="0" CLIP="0,0,3,7" BGCOLOR="#B0B0B0"></LAYER><LAYER LEFT="0" TOP="2" CLIP="0,0,7,3" BGCOLOR="#B0B0B0"></LAYER><LAYER LEFT="1" TOP="1" CLIP="0,0,5,5" BGCOLOR="#FFFFFF"></LAYER></LAYER><LAYER NAME="racket" LEFT="193" TOP="280" CLIP="0,0,39,3" BGCOLOR="#B0B0FF"></LAYER><LAYER NAME="info" LEFT="416" TOP="16">')
-}else{
- document.write('<DIV ID="info" STYLE="position:absolute; top:-1000px; left:416px">')
+	if(upDown){
+		if(player2.yVel > -player2.maxSpeed){
+			player2.yVel -= player2.accel;	
+		} else {
+			player2.yVel = -player2.maxSpeed;
+		}
+	} else {
+		if(player2.yVel < 0){
+			player2.yVel += player2.decel;
+			if(player2.yVel > 0) player2.yVel = 0;	
+		}
+	}
+	if(downDown){
+		if(player2.yVel < player2.maxSpeed){
+			player2.yVel += player2.accel;	
+		} else {
+			player2.yVel = player2.maxSpeed;
+		}
+	} else {
+		if(player2.yVel > 0){
+			player2.yVel -= player2.decel;
+			if(player2.yVel < 0) player2.yVel = 0;
+		}
+	}
+	if(leftDown){
+		if(player2.xVel > -player2.maxSpeed){
+			player2.xVel -= player2.accel;	
+		} else {
+			player2.xVel = -player2.maxSpeed;
+		}
+	} else {
+		if(player2.xVel < 0){
+			player2.xVel += player2.decel;
+			if(player2.xVel > 0) player2.xVel = 0;	
+		}
+	}
+	if(rightDown){
+		if(player2.xVel < player2.maxSpeed){
+			player2.xVel += player2.accel;	
+		} else {
+			player2.xVel = player2.maxSpeed;
+		}
+	} else {
+		if(player2.xVel > 0){
+			player2.xVel -= player2.decel;
+			if(player2.xVel < 0) player2.xVel = 0;
+		}
+	}
 }
-//-->
-</SCRIPT>
 
-<FONT STYLE="font-size:22px; color:#000044"><I><B>Hard Block </B></I></FONT>
-<FONT STYLE="font-size:28px; color:#CC0000"><I><B>R</B></I></FONT>
-<BR>
-  <FONT STYLE="font-size:14px; color:#003F00">....for IE4,IE5,NN4,Gecko....</FONT>
-<BR><P>
-<FORM NAME="SC">
-BALL :<INPUT TYPE="text" NAME="BL" SIZE=5 VALUE = "3" ><BR>
-TIME :<INPUT TYPE="text" NAME="TM" SIZE=5 VALUE = "0" ><BR>
-BLOCK:<INPUT TYPE="text" NAME="CL" SIZE=5 VALUE = "0" ><BR>
-SCORE:<INPUT TYPE="text" NAME="SR" SIZE=5 VALUE = "0" ><BR>
-<P><BR>
-</FORM>
-
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-if (n4FLG==1){
- document.write('</LAYER><LAYER NAME="clrmes" TOP=150 LEFT=160 visibility="HIDE">')
-}else{
- document.write('</DIV><DIV ID="clrmes" STYLE="position:absolute; top:-1000px; left:160px; visibility:visible">')
+document.onkeyup = function(e){
+	if(e.keyCode === 87){
+		wDown = false;
+	}
+	if(e.keyCode === 65){
+		aDown = false;
+	}
+	if(e.keyCode === 68){
+		dDown = false;
+	}
+	if(e.keyCode === 83){
+		sDown = false;
+	}
+	if(e.keyCode === 38){
+		upDown = false;
+	}
+	if(e.keyCode === 37){
+		leftDown = false;
+	}
+	if(e.keyCode === 40){
+		downDown = false;
+	}
+	if(e.keyCode === 39){
+		rightDown = false;
+	}
 }
-//-->
-</SCRIPT>
 
-
-<FONT STYLE="font-size:24px" COLOR="#44CC44">ALL CLEAR!</FONT>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-if (n4FLG==1){
- document.write('</LAYER><LAYER NAME="ovrmes" TOP=150 LEFT=160 visibility="HIDE">')
-}else{
- document.write('</DIV><DIV ID="ovrmes" STYLE="position:absolute; top:-1000px; left:160px; visibility:visible">')
+document.onkeydown = function(e){
+	if(e.keyCode === 87){
+		wDown = true;
+	}
+	if(e.keyCode === 65){
+		aDown = true;
+	}
+	if(e.keyCode === 68){
+		dDown = true;
+	}
+	if(e.keyCode === 83){
+		sDown = true;
+	}
+	if(e.keyCode === 38){
+		upDown = true;
+	}
+	if(e.keyCode === 37){
+		leftDown = true;
+	}
+	if(e.keyCode === 40){
+		downDown = true;
+	}
+	if(e.keyCode === 39){
+		rightDown = true;
+	}
 }
-//-->
-</SCRIPT>
 
-
-<FONT STYLE="font-size:24px" COLOR="#CC4444">GAME OVER!</FONT>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-if (n4FLG==1){
- document.write('</LAYER><LAYER NAME="starter" TOP=200 LEFT=180 visibility="HIDE"><FONT COLOR="#FFFFFF">')
-}else{
- document.write('</DIV><DIV ID="starter" STYLE="position:absolute; top:-1000px; left:180px; color:#FFFFFF; visibility:visible">')
+function renderBall(){
+	c.save();
+	c.beginPath();
+	c.fillStyle = "black";
+	c.arc(ball.x,ball.y,ball.size,0,Math.PI*2);
+	c.fill();
+	c.closePath();
+	c.restore();
 }
-//-->
-</SCRIPT>
 
-Left  = 4 key<BR>
-Right = 6 key<BR>
-START = S key
-
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-if (n4FLG==1){
- document.write('</FONT></LAYER><LAYER TOP=320 LEFT=20><A HREF="http://plaza.harmonix.ne.jp/~jimmeans/">Home</A></LAYER>')
-}else{
- if (document.getElementById){
- document.write('</DIV><A HREF="http://plaza.harmonix.ne.jp/~jimmeans/" STYLE="position:absolute; top:320px; left:20px">Home</A>')
- }else{
- document.write('</DIV><DIV  STYLE="position:absolute; top:320px; left:20px"><A HREF="http://plaza.harmonix.ne.jp/~jimmeans/">Home</A></DIV>')
- }
+function renderPlayers(){
+	c.save();
+	c.fillStyle = "red";
+	c.beginPath();
+	c.arc(player1.x,player1.y,player1.size,0,Math.PI*2);
+	c.fill();
+	c.closePath();
+	c.beginPath();
+	c.fillStyle = "blue";
+	c.arc(player2.x,player2.y,player2.size,0,Math.PI*2);
+	c.fill();
+	c.closePath();
+	c.restore();
 }
-//-->
-</SCRIPT>
 
+function renderGates(){
+	c.save();
+	c.beginPath();
+	c.moveTo(0,150);
+	c.lineTo(0,350);
+	c.strokeStyle = "red";
+	c.lineWidth = 10;
+	c.stroke();
+	c.closePath();
+	c.beginPath();
+	c.moveTo(canvas.width,150);
+	c.lineTo(canvas.width,350);
+	c.strokeStyle = "blue";
+	c.lineWidth = 10;
+	c.stroke();
+	c.closePath();
+	c.restore();
+}
 
-</BODY>
-</HTML>
+function renderBackground(){
+	c.save();
+	c.fillStyle = "#66aa66";
+	c.fillRect(0,0,canvas.width,canvas.height);
+	c.strokeStyle = "rgba(255,255,255,0.6)";
+	c.beginPath();
+	c.arc(canvas.width/2,canvas.height/2,150,0,Math.PI*2);
+	c.closePath();
+	c.lineWidth = 10;
+	c.stroke();
+	c.restore();
+}
 
+function clear(){
+	c.clearRect(0,0,canvas.width,canvas.height);
+}
+    
+    </script>
+
+</html>
